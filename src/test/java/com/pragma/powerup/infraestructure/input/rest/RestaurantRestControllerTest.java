@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.powerup.application.dto.request.RestaurantDto;
 import com.pragma.powerup.application.handler.IRestaurantHandler;
-import com.pragma.powerup.infraestructure.input.rest.RestaurantRestController;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

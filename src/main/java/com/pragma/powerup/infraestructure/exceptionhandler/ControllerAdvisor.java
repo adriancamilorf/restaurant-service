@@ -1,5 +1,6 @@
 package com.pragma.powerup.infraestructure.exceptionhandler;
 
+import com.pragma.powerup.infraestructure.exception.DishAlreadyExist;
 import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import com.pragma.powerup.infraestructure.exception.OwnerNotFound;
 import com.pragma.powerup.infraestructure.exception.RestaurantAlreadyExist;
@@ -29,5 +30,10 @@ public class ControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleOwnerInvalidException(OwnerInvalid ownerInvalid) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(MESSAGE, "Ingrese un dueño valido."));
+    }
+    @ExceptionHandler(DishAlreadyExist.class)
+    public ResponseEntity<Map<String, String>> handleDishAlreadyExistException(DishAlreadyExist dishAlreadyExist) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE, "El plato ya se encuentra registrado"));
     }
 }

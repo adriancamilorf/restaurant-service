@@ -1,4 +1,4 @@
-package com.pragma.powerup.application.validation.restaurant;
+package com.pragma.powerup.application.validation;
 
 import com.pragma.powerup.application.dto.request.RestaurantDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
