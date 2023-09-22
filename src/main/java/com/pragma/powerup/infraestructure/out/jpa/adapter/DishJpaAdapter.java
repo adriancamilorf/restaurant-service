@@ -3,6 +3,7 @@ package com.pragma.powerup.infraestructure.out.jpa.adapter;
 import com.pragma.powerup.domain.model.DishModel;
 import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import com.pragma.powerup.infraestructure.exception.DishAlreadyExist;
+import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IDishEntityMapper;
 import com.pragma.powerup.infraestructure.out.jpa.repository.IDishRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,15 @@ public class DishJpaAdapter implements IDishPersistencePort {
             throw new DishAlreadyExist();
         }
         dishRepository.save(dishEntityMapper.toDishEntity(dishModel));
+    }
+
+    @Override
+    public void updateDish(DishModel dishModel) {
+        dishRepository.save(dishEntityMapper.toDishEntity(dishModel));
+    }
+
+    @Override
+    public DishModel getDishById(Long id) {
+        return dishEntityMapper.toDishModel(dishRepository.findById(id).orElseThrow(NotDishFoundException::new));
     }
 }
