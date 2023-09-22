@@ -1,6 +1,7 @@
 package com.pragma.powerup.application.handler.impl;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
+import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
 import com.pragma.powerup.application.dto.request.RestaurantDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
 import com.pragma.powerup.application.mapper.IDishMapper;
@@ -36,7 +37,7 @@ class DishHandlerTest {
 
     @ParameterizedTest
     @MethodSource("dishRequestDtoProvider")
-    void testSaveRestaurantWithInvalidData(DishRequestDto dishRequestDto, Class<? extends Exception> expectedException) {
+    void testSaveDishWithInvalidData(DishRequestDto dishRequestDto, Class<? extends Exception> expectedException) {
         DishModel dishModel = new DishModel();
 
         when(dishMapper.toDishModel(dishRequestDto)).thenReturn(dishModel);
@@ -127,6 +128,54 @@ class DishHandlerTest {
                                 .price(2000L)
                                 .restaurant(1L)
                                 .urlImage("")
+                                .build(),
+                        InvalidRequestException.class
+                ),
+                Arguments.of(
+                        null,
+                        InvalidRequestException.class
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("dishRequestUpdateDtoProvider")
+    void testUpdateDishWithInvalidData(DishRequestUpdateDto dishRequestUpdateDto, Class<? extends Exception> expectedException) {
+        Long dishId = 1L;
+        DishModel dishModel = new DishModel();
+
+        when(dishMapper.toDishModel(dishRequestUpdateDto)).thenReturn(dishModel);
+
+        if (expectedException != null) {
+            Assertions.assertThrows(expectedException, () -> {
+                dishHandler.updateDish( dishId ,dishRequestUpdateDto);
+            });
+        } else {
+            dishHandler.updateDish( dishId ,dishRequestUpdateDto);
+            verify(dishServicePort).updateDish( dishId ,dishModel);
+        }
+    }
+
+    private static Stream<Arguments> dishRequestUpdateDtoProvider() {
+        return Stream.of(
+                Arguments.of(
+                        DishRequestUpdateDto.builder()
+                                .description("descripcion a probar")
+                                .price(200L)
+                                .build(),
+                        null
+                ),
+                Arguments.of(
+                        DishRequestUpdateDto.builder()
+                                .description("")
+                                .price(200L)
+                                .build(),
+                        InvalidRequestException.class
+                ),
+                Arguments.of(
+                        DishRequestUpdateDto.builder()
+                                .description("descripcion a probar")
+                                .price(null)
                                 .build(),
                         InvalidRequestException.class
                 ),

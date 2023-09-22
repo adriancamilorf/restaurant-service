@@ -1,9 +1,6 @@
 package com.pragma.powerup.infraestructure.exceptionhandler;
 
-import com.pragma.powerup.infraestructure.exception.DishAlreadyExist;
-import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
-import com.pragma.powerup.infraestructure.exception.OwnerNotFound;
-import com.pragma.powerup.infraestructure.exception.RestaurantAlreadyExist;
+import com.pragma.powerup.infraestructure.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,5 +32,10 @@ public class ControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleDishAlreadyExistException(DishAlreadyExist dishAlreadyExist) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Collections.singletonMap(MESSAGE, "El plato ya se encuentra registrado"));
+    }
+    @ExceptionHandler(NotDishFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotDishFoundException(NotDishFoundException notDishFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, "El plato no existe"));
     }
 }

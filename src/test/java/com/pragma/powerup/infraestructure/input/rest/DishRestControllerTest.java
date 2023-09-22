@@ -2,8 +2,10 @@ package com.pragma.powerup.infraestructure.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pragma.powerup.application.dto.request.DishRequestDto;
+import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
 import com.pragma.powerup.application.handler.IDishHandler;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -32,6 +34,17 @@ class DishRestControllerTest {
         mockMvc.perform(post("/dish/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dishRequestDto)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void testUpdateDishById() throws Exception {
+        DishRequestUpdateDto dishRequestUpdateDto = new DishRequestUpdateDto();
+        Mockito.doNothing().when(dishHandler).saveDish(Mockito.any(DishRequestDto.class));
+
+        mockMvc.perform(put("/dish/update/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(dishRequestUpdateDto)))
                 .andExpect(status().isCreated());
     }
 }

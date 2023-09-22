@@ -1,6 +1,7 @@
 package com.pragma.powerup.application.validation;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
+import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
 
 import static com.pragma.powerup.application.util.Validate.notIsString;
@@ -30,6 +31,18 @@ public class DishValidation {
         }
         if(notIsString(dishRequestDto.getUrlImage())){
             throw new InvalidRequestException("La URL de la imagen es obligatoria");
+        }
+    }
+
+    public static void DishRequestUpdateDtoValidation(DishRequestUpdateDto dishRequestUpdateDto){
+        if(dishRequestUpdateDto==null){
+            throw new InvalidRequestException("Datos no validados");
+        }
+        if(dishRequestUpdateDto.getPrice()==null){
+            throw new InvalidRequestException("El precio es obligatorio");
+        }
+        if(notIsString(dishRequestUpdateDto.getDescription())){
+            throw new InvalidRequestException("La descripcion es obligatoria");
         }
     }
 
