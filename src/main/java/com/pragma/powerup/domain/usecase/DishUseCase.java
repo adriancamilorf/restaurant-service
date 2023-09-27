@@ -10,7 +10,6 @@ public class DishUseCase implements IDishServicePort {
 
     private final IDishPersistencePort dishPersistencePort;
 
-
     @Override
     public void saveDish(DishModel dishModel) {
         dishModel.setActive(true);
