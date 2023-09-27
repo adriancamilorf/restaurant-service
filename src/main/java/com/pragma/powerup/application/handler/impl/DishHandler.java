@@ -8,6 +8,7 @@ import static com.pragma.powerup.application.validation.DishValidation.dishReque
 import static com.pragma.powerup.application.validation.DishValidation.DishRequestUpdateDtoValidation;
 import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
+import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
 import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,24 @@ public class DishHandler implements IDishHandler {
 
     @Override
     public void updateDish( Long restaurantId, DishRequestUpdateDto dishRequestUpdateDto, Long userId) {
-        Boolean isOwner = restaurantServicePort.isOwnerOfRestaurant(restaurantId,userId);
+        boolean isOwner = restaurantServicePort.isOwnerOfRestaurant(restaurantId,userId);
         if(!isOwner){
             throw new OwnerInvalid();
         }
         DishRequestUpdateDtoValidation(dishRequestUpdateDto);
         dishServicePort.updateDish(restaurantId, dishMapper.toDishModel(dishRequestUpdateDto));
+    }
+
+    @Override
+    public void updateStatus(Long dishId, Long userId ) {
+        Long restaurantId= dishServicePort.getRestaurantForDish(dishId);
+        if(restaurantId==null){
+            throw new NotDishFoundException();
+        }
+        boolean isOwner = restaurantServicePort.isOwnerOfRestaurant(restaurantId,userId);
+        if(!isOwner){
+            throw new OwnerInvalid();
+        }
+        dishServicePort.updateStatus(dishId);
     }
 }

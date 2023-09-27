@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +30,12 @@ public class DishRestController {
             @ApiResponse(responseCode = "201", description = "dish created", content = @Content),
             @ApiResponse(responseCode = "409", description = "dish already exists", content = @Content)
     })
-    @PreAuthorize("hasAuthority('OWNER')")
     @PostMapping("/save")
     public ResponseEntity<Map<String, String>> saveDish(@RequestBody DishRequestDto dishRequestDto, HttpServletRequest request){
         String token = JwtUtils.extractJwtToken(request);
         Long userId = jwtProvider.getUserIdFromToken(token);
         dishHandler.saveDish(dishRequestDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(Collections.singletonMap("message","Plato creado correctamente"));
     }
 
@@ -45,7 +43,7 @@ public class DishRestController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Dish updated",
+                    description = "Status updated",
                     content = @Content
             ),
             @ApiResponse(
@@ -54,13 +52,12 @@ public class DishRestController {
                     content = @Content
             ),
     })
-    @PreAuthorize("hasAuthority('OWNER')")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Map<String,String>> updateDishById(@PathVariable Long id, @RequestBody DishRequestUpdateDto dishRequestUpdateDto, HttpServletRequest request){
+    @PutMapping("/changeStatus/{id}")
+    public ResponseEntity<Map<String,String>> updateDishStatusById(@PathVariable Long id, HttpServletRequest request){
         String token = JwtUtils.extractJwtToken(request);
         Long userId = jwtProvider.getUserIdFromToken(token);
-        dishHandler.updateDish(id, dishRequestUpdateDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Collections.singletonMap("message","Plato actualizado correctamente"));
+        dishHandler.updateStatus(id, userId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Collections.singletonMap("message","Estado actualizado correctamente"));
     }
 }

@@ -8,4 +8,5 @@ public interface IDishHandler {
     void saveDish(DishRequestDto dishRequestDto, Long userId);
 
     void updateDish( Long id , DishRequestUpdateDto dishRequestUpdateDto, Long userId);
+    void updateStatus(Long dishId, Long userId);
 }

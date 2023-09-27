@@ -21,7 +21,7 @@ public class DishEntity {
     private Long price;
     @Column(nullable = false)
     private String urlImage;
-    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    @Column(columnDefinition = "BOOLEAN DEFAULT true",nullable = false)
     private Boolean active;
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_category")

@@ -8,8 +8,11 @@ import com.pragma.powerup.application.mapper.IDishMapper;
 import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
 import com.pragma.powerup.domain.model.DishModel;
+import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
+import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,8 +22,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class DishHandlerTest {
 
@@ -189,6 +191,54 @@ class DishHandlerTest {
                         InvalidRequestException.class
                 )
         );
+    }
+
+    @Test
+    void testUpdateStatus() {
+
+        Long dishId = 1L;
+        Long userId = 2L;
+        Long restaurantId = 3L;
+
+        when(dishServicePort.getRestaurantForDish(dishId)).thenReturn(restaurantId);
+
+        when(restaurantServicePort.isOwnerOfRestaurant(restaurantId, userId)).thenReturn(true);
+
+        Assertions.assertDoesNotThrow(() -> dishHandler.updateStatus(dishId, userId));
+
+        verify(dishServicePort, times(1)).getRestaurantForDish(dishId);
+        verify(restaurantServicePort, times(1)).isOwnerOfRestaurant(restaurantId, userId);
+        verify(dishServicePort, times(1)).updateStatus(dishId);
+    }
+
+    @Test
+    void testUpdateStatus_DishNotFound() {
+
+        Long dishId = 1L;
+        Long userId = 2L;
+
+        when(dishServicePort.getRestaurantForDish(dishId)).thenReturn(null);
+
+        Assertions.assertThrows(NotDishFoundException.class, () -> dishHandler.updateStatus(dishId, userId));
+
+        verify(dishServicePort, times(1)).getRestaurantForDish(dishId);
+    }
+
+    @Test
+    void testUpdateStatus_OwnerInvalid() {
+        // Arrange
+        Long dishId = 1L;
+        Long userId = 2L;
+        Long restaurantId = 3L;
+
+        when(dishServicePort.getRestaurantForDish(dishId)).thenReturn(restaurantId);
+
+        when(restaurantServicePort.isOwnerOfRestaurant(restaurantId, userId)).thenReturn(false);
+
+        Assertions.assertThrows(OwnerInvalid.class, () -> dishHandler.updateStatus(dishId, userId));
+
+        verify(dishServicePort, times(1)).getRestaurantForDish(dishId);
+        verify(restaurantServicePort, times(1)).isOwnerOfRestaurant(restaurantId, userId);
     }
 
 }

@@ -8,4 +8,8 @@ public interface IDishPersistencePort {
 
     DishModel getDishById(Long id);
 
+    void updateStatus(Long dishId);
+
+    Long getRestaurantForDish(Long dishId);
+
 }

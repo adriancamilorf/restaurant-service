@@ -53,4 +53,28 @@ class DishUseCaseTest {
         Assertions.assertEquals(updatedDishModel.getDescription(), existingDishModel.getDescription());
     }
 
+    @Test
+    void testGetRestaurantForDish() {
+
+        Long dishId = 1L;
+        Long restaurantId = 100L;
+        when(dishPersistencePort.getRestaurantForDish(dishId)).thenReturn(restaurantId);
+
+        Long result = dishUseCase.getRestaurantForDish(dishId);
+
+        Assertions.assertEquals(restaurantId, result);
+    }
+
+
+    @Test
+    void testUpdateStatus() {
+
+        Long dishId = 1L;
+        doNothing().when(dishPersistencePort).updateStatus(dishId);
+
+        dishUseCase.updateStatus(dishId);
+
+        verify(dishPersistencePort, times(1)).updateStatus(dishId);
+    }
 }
+
