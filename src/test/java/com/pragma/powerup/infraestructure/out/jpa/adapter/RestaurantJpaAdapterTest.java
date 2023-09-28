@@ -6,6 +6,7 @@ import com.pragma.powerup.domain.model.RestaurantModel;
 import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import com.pragma.powerup.infraestructure.exception.OwnerNotFound;
 import com.pragma.powerup.infraestructure.exception.RestaurantAlreadyExist;
+import com.pragma.powerup.infraestructure.exception.RestaurantNotFoundException;
 import com.pragma.powerup.infraestructure.feign.user.RoleServiceRequest;
 import com.pragma.powerup.infraestructure.feign.user.dto.response.role.RoleByUserIdResponseDto;
 import com.pragma.powerup.infraestructure.out.jpa.entity.RestaurantEntity;
@@ -14,6 +15,7 @@ import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantReposito
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.AssertionErrors;
 
 import java.util.Optional;
 
@@ -126,6 +128,52 @@ class RestaurantJpaAdapterTest {
                         .build()
         );
         Assertions.assertThrows(RestaurantAlreadyExist.class, () -> restaurantJpaAdapter.saveRestaurant(restaurantModel));
+    }
+
+    @Test
+    void testIsOwnerOfRestaurant() {
+
+        Long restaurantId = 1L;
+        Long userId = 2L;
+
+        RestaurantEntity restaurantEntity = new RestaurantEntity();
+        restaurantEntity.setOwnerId(userId);
+        when(restaurantRepository.findById(restaurantId)).thenReturn(java.util.Optional.of(restaurantEntity));
+
+        boolean isOwner = restaurantJpaAdapter.isOwnerOfRestaurant(restaurantId, userId);
+
+        Assertions.assertTrue(isOwner);
+
+        verify(restaurantRepository, times(1)).findById(restaurantId);
+    }
+
+    @Test
+    void testIsOwnerOfRestaurant_RestaurantNotFound() {
+
+        Long restaurantId = 1L;
+        Long userId = 2L;
+
+        when(restaurantRepository.findById(restaurantId)).thenReturn(java.util.Optional.empty());
+
+        Assertions.assertThrows(RestaurantNotFoundException.class, () -> restaurantJpaAdapter.isOwnerOfRestaurant(restaurantId, userId));
+
+        verify(restaurantRepository, times(1)).findById(restaurantId);
+    }
+
+    @Test
+    void testIsOwnerOfRestaurant_UserIsNotOwner() {
+
+        Long restaurantId = 1L;
+        Long userId = 2L;
+
+        RestaurantEntity restaurantEntity = new RestaurantEntity();
+        restaurantEntity.setOwnerId(3L);
+        when(restaurantRepository.findById(restaurantId)).thenReturn(java.util.Optional.of(restaurantEntity));
+
+        boolean isOwner = restaurantJpaAdapter.isOwnerOfRestaurant(restaurantId, userId);
+        Assertions.assertFalse(isOwner);
+
+        verify(restaurantRepository, times(1)).findById(restaurantId);
     }
 
 }

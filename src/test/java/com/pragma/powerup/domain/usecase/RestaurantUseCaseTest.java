@@ -39,4 +39,16 @@ class RestaurantUseCaseTest {
 
         Mockito.verify(restaurantPersistencePort, Mockito.times(1)).saveRestaurant(restaurantModel);
     }
+
+    @Test
+    void isOwnerOfRestaurantTest(){
+        Long restaurantId = 1L;
+        Long userId = 100L;
+        Mockito.when(restaurantPersistencePort.isOwnerOfRestaurant(restaurantId, userId)).thenReturn(true);
+
+        boolean result = restaurantPersistencePort.isOwnerOfRestaurant(restaurantId, userId);
+
+        assertTrue(result);
+    }
+
 }

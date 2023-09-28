@@ -29,7 +29,6 @@ class DishRestControllerTest {
     private JwtProvider jwtProvider; // Simular la dependencia JwtProvider
 
     @Test
-    @WithMockUser(authorities = "OWNER")
     void testSaveDish() throws Exception {
         DishRequestDto dishRequestDto = new DishRequestDto();
         dishRequestDto.setName("Plato de Prueba");
@@ -44,7 +43,6 @@ class DishRestControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "OWNER")
     void testUpdateDishById() throws Exception {
         DishRequestUpdateDto dishRequestUpdateDto = new DishRequestUpdateDto();
 
