@@ -12,6 +12,8 @@ import com.pragma.powerup.infraestructure.out.jpa.entity.RestaurantEntity;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IRestaurantEntityMapper;
 import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,6 +44,11 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     public Boolean isOwnerOfRestaurant(Long restaurantId, Long userId){
         RestaurantEntity restaurantEntity= restaurantRepository.findById(restaurantId).orElseThrow( RestaurantNotFoundException::new );
         return restaurantEntity.getOwnerId().equals(userId);
+    }
+
+    @Override
+    public Page<RestaurantModel> getAllRestaurantsOrderedByName(Pageable pageable) {
+        return restaurantEntityMapper.toRestaurantModelPage(restaurantRepository.findAllByOrderByName(pageable));
     }
 
 }

@@ -45,6 +45,8 @@ public class MainSecurity {
                 .authorizeRequests(requests -> requests
                         .antMatchers( "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
                         .antMatchers("/dish/save", "/dish/update/**", "dish/changeStatus/**").hasAuthority("OWNER")
+                        .antMatchers("/restaurant/list").hasAuthority("CLIENT")
+                        .antMatchers("restaurant/save").hasAuthority("ADMIN")
                 )
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

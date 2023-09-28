@@ -1,21 +1,25 @@
 package com.pragma.powerup.application.handler.impl;
 
 import com.pragma.powerup.application.dto.request.RestaurantDto;
+import com.pragma.powerup.application.dto.response.RestaurantListResponseDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
 import com.pragma.powerup.application.mapper.IRestaurantMapper;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
 import com.pragma.powerup.domain.model.RestaurantModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class RestaurantHandlerTest {
     private IRestaurantServicePort restaurantServicePort;
@@ -131,4 +135,30 @@ class RestaurantHandlerTest {
                 )
         );
     }
+
+    @Test
+    void testGetAllRestaurantsOrderedByName() {
+        RestaurantModel restaurantA = new RestaurantModel(1L, "Restaurante A", "Dirección A", 1L, "1234567890", "http://urlA.com", "NIT A");
+        RestaurantModel restaurantB = new RestaurantModel(2L, "Restaurante B", "Dirección B", 2L, "9876543210", "http://urlB.com", "NIT B");
+        RestaurantModel restaurantC = new RestaurantModel(3L, "Restaurante C", "Dirección C", 3L, "5555555555", "http://urlC.com", "NIT C");
+
+        Page<RestaurantModel> restaurantPage = new PageImpl<>(List.of(restaurantA, restaurantB, restaurantC));
+
+        when(restaurantMapper.toRestaurantListResponseDto(restaurantA)).thenReturn(
+                new RestaurantListResponseDto("Restaurante A", "http://urlA.com"));
+        when(restaurantMapper.toRestaurantListResponseDto(restaurantB)).thenReturn(
+                new RestaurantListResponseDto("Restaurante B", "http://urlB.com"));
+        when(restaurantMapper.toRestaurantListResponseDto(restaurantC)).thenReturn(
+                new RestaurantListResponseDto("Restaurante C", "http://urlC.com"));
+
+        when(restaurantServicePort.getAllRestaurantsOrderedByName(0, 10)).thenReturn(restaurantPage);
+
+        Page<RestaurantListResponseDto> result = restaurantHandler.getAllRestaurantsOrderedByName(0, 10);
+
+        Assertions.assertEquals(3, result.getTotalElements());
+        Assertions.assertEquals(3, result.getContent().size());
+        verify(restaurantMapper, times(3)).toRestaurantListResponseDto(any());
+    }
+
+
 }

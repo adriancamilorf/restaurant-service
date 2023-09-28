@@ -9,6 +9,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import java.awt.print.Pageable;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,13 +49,39 @@ class RestaurantUseCaseTest {
 
     @Test
     void isOwnerOfRestaurantTest(){
-        Long restaurantId = 1L;
+            Long restaurantId = 1L;
         Long userId = 100L;
         Mockito.when(restaurantPersistencePort.isOwnerOfRestaurant(restaurantId, userId)).thenReturn(true);
 
-        boolean result = restaurantPersistencePort.isOwnerOfRestaurant(restaurantId, userId);
+        boolean result = restaurantUseCase.isOwnerOfRestaurant(restaurantId, userId);
 
         assertTrue(result);
     }
+
+    @Test
+    void testGetAllRestaurantsOrderedByName() {
+        RestaurantModel restaurantA = new RestaurantModel(1L, "Restaurante A", "Dirección A", 1L, "1234567890", "http://urlA.com", "NIT A");
+        RestaurantModel restaurantB = new RestaurantModel(2L, "Restaurante B", "Dirección B", 2L, "9876543210", "http://urlB.com", "NIT B");
+        RestaurantModel restaurantC = new RestaurantModel(3L, "Restaurante C", "Dirección C", 3L, "5555555555", "http://urlC.com", "NIT C");
+
+        Page<RestaurantModel> restaurantPage = new PageImpl<>(List.of(restaurantA, restaurantB, restaurantC));
+
+        Mockito.when(restaurantPersistencePort.getAllRestaurantsOrderedByName(
+                PageRequest.of(0, 10, Sort.by("name"))))
+                .thenReturn(restaurantPage);
+
+        Page<RestaurantModel> result = restaurantUseCase.getAllRestaurantsOrderedByName(0, 10);
+
+        assertNotNull(result);
+        assertEquals(3, result.getTotalElements());
+        assertEquals(0, result.getNumber());
+        assertEquals(1, result.getTotalPages());
+
+        List<RestaurantModel> restaurantList = result.getContent();
+        assertEquals(restaurantA.getName(), restaurantList.get(0).getName());
+        assertEquals(restaurantB.getName(), restaurantList.get(1).getName());
+        assertEquals(restaurantC.getName(), restaurantList.get(2).getName());
+    }
+
 
 }

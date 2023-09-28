@@ -15,8 +15,11 @@ import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantReposito
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.AssertionErrors;
+import org.mockito.ArgumentMatchers;
+import org.springframework.data.domain.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 class RestaurantJpaAdapterTest {
@@ -24,6 +27,8 @@ class RestaurantJpaAdapterTest {
     private IRestaurantRepository restaurantRepository;
     private RoleServiceRequest roleServiceRequest;
     private RestaurantJpaAdapter restaurantJpaAdapter;
+
+    private IRestaurantEntityMapper restaurantEntityMapper;
 
     @BeforeEach
     public void setUp() {
