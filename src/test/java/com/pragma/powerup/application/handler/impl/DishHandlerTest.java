@@ -6,6 +6,7 @@ import com.pragma.powerup.application.dto.request.RestaurantDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
 import com.pragma.powerup.application.mapper.IDishMapper;
 import com.pragma.powerup.domain.api.IDishServicePort;
+import com.pragma.powerup.domain.api.IRestaurantServicePort;
 import com.pragma.powerup.domain.model.DishModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ class DishHandlerTest {
     @Mock
     private IDishServicePort dishServicePort;
 
+    @Mock
+    private IRestaurantServicePort restaurantServicePort;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -39,15 +43,16 @@ class DishHandlerTest {
     @MethodSource("dishRequestDtoProvider")
     void testSaveDishWithInvalidData(DishRequestDto dishRequestDto, Class<? extends Exception> expectedException) {
         DishModel dishModel = new DishModel();
+        Long userId = 1L;
 
         when(dishMapper.toDishModel(dishRequestDto)).thenReturn(dishModel);
 
         if (expectedException != null) {
             Assertions.assertThrows(expectedException, () -> {
-                dishHandler.saveDish(dishRequestDto);
+                dishHandler.saveDish(dishRequestDto, userId);
             });
         } else {
-            dishHandler.saveDish(dishRequestDto);
+            dishHandler.saveDish(dishRequestDto, userId);
             verify(dishServicePort).saveDish(dishModel);
         }
     }
@@ -143,15 +148,15 @@ class DishHandlerTest {
     void testUpdateDishWithInvalidData(DishRequestUpdateDto dishRequestUpdateDto, Class<? extends Exception> expectedException) {
         Long dishId = 1L;
         DishModel dishModel = new DishModel();
-
+        Long userId = 1L;
         when(dishMapper.toDishModel(dishRequestUpdateDto)).thenReturn(dishModel);
-
+        when(restaurantServicePort.isOwnerOfRestaurant(1L,userId)).thenReturn(true);
         if (expectedException != null) {
             Assertions.assertThrows(expectedException, () -> {
-                dishHandler.updateDish( dishId ,dishRequestUpdateDto);
+                dishHandler.updateDish( dishId ,dishRequestUpdateDto, userId );
             });
         } else {
-            dishHandler.updateDish( dishId ,dishRequestUpdateDto);
+            dishHandler.updateDish( dishId ,dishRequestUpdateDto, userId);
             verify(dishServicePort).updateDish( dishId ,dishModel);
         }
     }
