@@ -1,6 +1,8 @@
 package com.pragma.powerup.domain.api;
 
 import com.pragma.powerup.domain.model.DishModel;
+import com.pragma.powerup.domain.model.RestaurantModel;
+import org.springframework.data.domain.Page;
 
 public interface IDishServicePort {
 
@@ -10,5 +12,7 @@ public interface IDishServicePort {
     void updateStatus(Long dishId);
 
     Long getRestaurantForDish(Long dishId);
+
+    Page<DishModel> findByCategoryAndRestaurantName(Long category, String restaurantName, int page, int pageSize);
 
 }

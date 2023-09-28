@@ -4,6 +4,10 @@ import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.model.DishModel;
 import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RequiredArgsConstructor
 public class DishUseCase implements IDishServicePort {
@@ -32,5 +36,11 @@ public class DishUseCase implements IDishServicePort {
     @Override
     public Long getRestaurantForDish(Long dishId) {
         return dishPersistencePort.getRestaurantForDish(dishId);
+    }
+
+    @Override
+    public Page<DishModel> findByCategoryAndRestaurantName(Long category, String restaurantName, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name"));
+        return dishPersistencePort.findByCategoryAndRestaurantName(category,restaurantName,pageable);
     }
 }

@@ -1,7 +1,7 @@
 package com.pragma.powerup.infraestructure.input.rest;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
-import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
+import com.pragma.powerup.application.dto.response.DishResponseDto;
 import com.pragma.powerup.application.handler.IDishHandler;
 import com.pragma.powerup.infraestructure.security.jwt.JwtProvider;
 import com.pragma.powerup.infraestructure.utils.JwtUtils;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,5 +60,14 @@ public class DishRestController {
         dishHandler.updateStatus(id, userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Collections.singletonMap("message","Estado actualizado correctamente"));
+    }
+
+    @GetMapping("/list/{restaurantName}")
+    public ResponseEntity<Page<DishResponseDto>> listRestaurants(
+            @RequestParam Long categoryId,
+            @PathVariable String restaurantName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(dishHandler.findByCategoryAndRestaurantName(categoryId,restaurantName,page,size));
     }
 }

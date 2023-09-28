@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface IRestaurantPersistencePort {
     void saveRestaurant(RestaurantModel restaurantModel);
     Boolean isOwnerOfRestaurant(Long restaurantId, Long userId);
-    public Page<RestaurantModel> getAllRestaurantsOrderedByName(Pageable pageable);
+    Page<RestaurantModel> getAllRestaurantsOrderedByName(Pageable pageable);
 
 }

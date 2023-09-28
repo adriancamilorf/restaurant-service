@@ -1,4 +1,4 @@
-package com.pragma.powerup.application.dto.request;
+package com.pragma.powerup.application.dto.response;
 
 import lombok.*;
 
@@ -7,11 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DishRequestDto {
+public class DishResponseDto {
     private String name;
-    private Long category;
+
     private String description;
     private Long price;
-    private Long restaurant;
+
     private String urlImage;
 }

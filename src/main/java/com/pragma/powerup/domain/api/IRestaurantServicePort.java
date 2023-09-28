@@ -7,6 +7,6 @@ public interface IRestaurantServicePort {
     void saveRestaurant(RestaurantModel restaurantModel);
     Boolean isOwnerOfRestaurant(Long restaurantId, Long userId);
 
-    public Page<RestaurantModel> getAllRestaurantsOrderedByName(int page, int pageSize);
+    Page<RestaurantModel> getAllRestaurantsOrderedByName(int page, int pageSize);
 
 }

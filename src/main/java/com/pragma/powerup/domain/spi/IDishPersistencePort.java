@@ -1,6 +1,9 @@
 package com.pragma.powerup.domain.spi;
 
 import com.pragma.powerup.domain.model.DishModel;
+import com.pragma.powerup.domain.model.RestaurantModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IDishPersistencePort {
     void saveDish(DishModel dishModel);
@@ -12,4 +15,5 @@ public interface IDishPersistencePort {
 
     Long getRestaurantForDish(Long dishId);
 
+    Page<DishModel> findByCategoryAndRestaurantName(Long category, String restaurantName, Pageable pageable);
 }

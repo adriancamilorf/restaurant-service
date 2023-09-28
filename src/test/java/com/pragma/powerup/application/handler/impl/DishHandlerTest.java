@@ -2,12 +2,14 @@ package com.pragma.powerup.application.handler.impl;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
 import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
-import com.pragma.powerup.application.dto.request.RestaurantDto;
+import com.pragma.powerup.application.dto.response.DishResponseDto;
 import com.pragma.powerup.application.exception.InvalidRequestException;
 import com.pragma.powerup.application.mapper.IDishMapper;
 import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
+import com.pragma.powerup.domain.model.CategoryModel;
 import com.pragma.powerup.domain.model.DishModel;
+import com.pragma.powerup.domain.model.RestaurantModel;
 import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
 import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +21,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
@@ -239,6 +244,35 @@ class DishHandlerTest {
 
         verify(dishServicePort, times(1)).getRestaurantForDish(dishId);
         verify(restaurantServicePort, times(1)).isOwnerOfRestaurant(restaurantId, userId);
+    }
+
+    @Test
+    void testGetAllRestaurantsOrderedByName() {
+        Long categoryId = 1L;
+        String restaurantName = "Restaurante A";
+        int page = 0;
+        int pageSize = 10;
+
+        DishModel dishA = new DishModel(1L, "Plato A", CategoryModel.builder().id(1L).build(), "Descripción A", 10L, RestaurantModel.builder().id(5L).name(restaurantName).build(), "http://urlA.com", true);
+        DishModel dishB = new DishModel(2L, "Plato B", CategoryModel.builder().id(1L).build(), "Descripción B", 15L, RestaurantModel.builder().id(5L).name(restaurantName).build(), "http://urlB.com", true);
+        DishModel dishC = new DishModel(3L, "Plato C", CategoryModel.builder().id(1L).build(), "Descripción C", 12L, RestaurantModel.builder().id(5L).name(restaurantName).build(), "http://urlC.com", true);
+
+        Page<DishModel> dishPage = new PageImpl<>(List.of(dishA, dishB, dishC));
+
+        when(dishMapper.toDishResponseDto(dishA)).thenReturn(
+                new DishResponseDto());
+        when(dishMapper.toDishResponseDto(dishB)).thenReturn(
+                new DishResponseDto());
+        when(dishMapper.toDishResponseDto(dishC)).thenReturn(
+                new DishResponseDto());
+
+        when(dishServicePort.findByCategoryAndRestaurantName(categoryId,restaurantName,page, pageSize)).thenReturn(dishPage);
+
+        Page<DishResponseDto> result = dishHandler.findByCategoryAndRestaurantName(categoryId,restaurantName,0, 10);
+
+        Assertions.assertEquals(3, result.getTotalElements());
+        Assertions.assertEquals(3, result.getContent().size());
+        verify(dishMapper, times(3)).toDishResponseDto(any());
     }
 
 }

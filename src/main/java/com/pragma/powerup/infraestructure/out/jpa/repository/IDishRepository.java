@@ -2,6 +2,8 @@ package com.pragma.powerup.infraestructure.out.jpa.repository;
 
 import com.pragma.powerup.infraestructure.out.jpa.entity.DishEntity;
 import feign.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,5 +14,9 @@ public interface IDishRepository extends JpaRepository<DishEntity, Long> {
 
     @Query("SELECT d.restaurant.id FROM DishEntity d WHERE d.id = :dishId")
     Long findRestaurantIdByDishId(@Param("dishId") Long dishId);
+
+    @Query("SELECT d FROM DishEntity d WHERE d.category.id = :categoryId AND d.restaurant.name = :restaurantName")
+    Page<DishEntity> findByCategoryAndRestaurantName(@Param("categoryId") Long categoryId, @Param("restaurantName") String restaurantName, Pageable pageable);
+
 
 }

@@ -2,15 +2,18 @@ package com.pragma.powerup.application.handler.impl;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
 import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
+import com.pragma.powerup.application.dto.response.DishResponseDto;
 import com.pragma.powerup.application.handler.IDishHandler;
 import com.pragma.powerup.application.mapper.IDishMapper;
 import static com.pragma.powerup.application.validation.DishValidation.dishRequestDtoValidation;
 import static com.pragma.powerup.application.validation.DishValidation.DishRequestUpdateDtoValidation;
 import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
+import com.pragma.powerup.domain.model.DishModel;
 import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
 import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -51,5 +54,11 @@ public class DishHandler implements IDishHandler {
             throw new OwnerInvalid();
         }
         dishServicePort.updateStatus(dishId);
+    }
+
+    @Override
+    public Page<DishResponseDto> findByCategoryAndRestaurantName(Long category,String restaurantName, int page, int pageSize) {
+        Page<DishModel> dishModelPage = dishServicePort.findByCategoryAndRestaurantName(category, restaurantName, page,pageSize);
+        return dishModelPage.map(dishMapper::toDishResponseDto);
     }
 }

@@ -2,6 +2,7 @@ package com.pragma.powerup.application.mapper;
 
 import com.pragma.powerup.application.dto.request.DishRequestDto;
 import com.pragma.powerup.application.dto.request.DishRequestUpdateDto;
+import com.pragma.powerup.application.dto.response.DishResponseDto;
 import com.pragma.powerup.domain.model.CategoryModel;
 import com.pragma.powerup.domain.model.DishModel;
 import com.pragma.powerup.domain.model.RestaurantModel;
@@ -15,6 +16,8 @@ public interface IDishMapper {
     DishModel toDishModel(DishRequestDto dishRequestDto);
 
     DishModel toDishModel(DishRequestUpdateDto dishRequestUpdateDto);
+
+    DishResponseDto toDishResponseDto(DishModel dishModel);
 
     default RestaurantModel mapIdToRestaurantModel(Long restaurantId) {
         if (restaurantId == null) {
