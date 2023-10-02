@@ -15,4 +15,6 @@ public interface IDishServicePort {
 
     Page<DishModel> findByCategoryAndRestaurantName(Long category, String restaurantName, int page, int pageSize);
 
+    DishModel findByIdAndRestaurant(Long id, Long restaurantId);
+
 }

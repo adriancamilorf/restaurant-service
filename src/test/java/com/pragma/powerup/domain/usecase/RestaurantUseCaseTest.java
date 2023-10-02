@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,5 +82,13 @@ class RestaurantUseCaseTest {
         assertEquals(restaurantC.getName(), restaurantList.get(2).getName());
     }
 
+    @Test
+    void testGetRestaurantIdByName() {
+        String restaurantName = "Restaurante XYZ";
+        Long expectedRestaurantId = 123L;
+        Mockito.when(restaurantPersistencePort.getRestaurantIdByName(restaurantName)).thenReturn(expectedRestaurantId);
+        Long actualRestaurantId = restaurantUseCase.getRestaurantIdByName(restaurantName);
+        assertEquals(expectedRestaurantId, actualRestaurantId);
+    }
 
 }

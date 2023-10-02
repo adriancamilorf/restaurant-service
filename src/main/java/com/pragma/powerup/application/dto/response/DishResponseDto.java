@@ -8,10 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class DishResponseDto {
+    private Long id;
     private String name;
-
     private String description;
     private Long price;
-
     private String urlImage;
 }

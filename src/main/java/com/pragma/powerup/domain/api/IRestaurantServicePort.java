@@ -9,4 +9,6 @@ public interface IRestaurantServicePort {
 
     Page<RestaurantModel> getAllRestaurantsOrderedByName(int page, int pageSize);
 
+    Long getRestaurantIdByName(String name);
+
 }

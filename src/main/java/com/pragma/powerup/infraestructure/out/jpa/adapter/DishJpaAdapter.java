@@ -1,9 +1,9 @@
 package com.pragma.powerup.infraestructure.out.jpa.adapter;
 
 import com.pragma.powerup.domain.model.DishModel;
-import com.pragma.powerup.domain.model.RestaurantModel;
 import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import com.pragma.powerup.infraestructure.exception.DishAlreadyExist;
+import com.pragma.powerup.infraestructure.exception.InvalidDishRestaurantException;
 import com.pragma.powerup.infraestructure.exception.NotDishFoundException;
 import com.pragma.powerup.infraestructure.out.jpa.entity.DishEntity;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IDishEntityMapper;
@@ -52,5 +52,10 @@ public class DishJpaAdapter implements IDishPersistencePort {
     @Override
     public Page<DishModel> findByCategoryAndRestaurantName( Long category, String restaurantName ,Pageable pageable) {
         return dishEntityMapper.toDishModelPage(dishRepository.findByCategoryAndRestaurantName(category,restaurantName,pageable));
+    }
+
+    @Override
+    public DishModel findByIdAndRestaurant(Long id, Long restaurantId){
+       return dishEntityMapper.toDishModel(dishRepository.findByIdAndRestaurant(id,restaurantId).orElseThrow(InvalidDishRestaurantException::new));
     }
 }

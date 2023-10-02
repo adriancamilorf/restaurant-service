@@ -9,4 +9,6 @@ public interface IRestaurantPersistencePort {
     Boolean isOwnerOfRestaurant(Long restaurantId, Long userId);
     Page<RestaurantModel> getAllRestaurantsOrderedByName(Pageable pageable);
 
+    Long getRestaurantIdByName(String name);
+
 }

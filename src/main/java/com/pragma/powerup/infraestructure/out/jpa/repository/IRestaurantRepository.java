@@ -13,4 +13,5 @@ public interface IRestaurantRepository extends JpaRepository<RestaurantEntity,Lo
     Optional<RestaurantEntity> findByNit(String nit);
 
     Page<RestaurantEntity> findAllByOrderByName(Pageable pageable);
+
 }

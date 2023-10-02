@@ -29,4 +29,9 @@ public class RestaurantUseCase implements IRestaurantServicePort {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name"));
         return restaurantPersistencePort.getAllRestaurantsOrderedByName(pageable);
     }
+
+    @Override
+    public Long getRestaurantIdByName(String name) {
+        return restaurantPersistencePort.getRestaurantIdByName(name);
+    }
 }

@@ -43,4 +43,9 @@ public class DishUseCase implements IDishServicePort {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name"));
         return dishPersistencePort.findByCategoryAndRestaurantName(category,restaurantName,pageable);
     }
+
+    @Override
+    public DishModel findByIdAndRestaurant(Long id, Long restaurantId) {
+        return dishPersistencePort.findByIdAndRestaurant(id,restaurantId);
+    }
 }

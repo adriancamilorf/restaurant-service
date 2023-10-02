@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IRestaurantEntityMapper {
+
     RestaurantEntity toRestaurantEntity(RestaurantModel restaurantModel);
     RestaurantModel toRestaurantModel(RestaurantEntity restaurantEntity);
 

@@ -107,7 +107,7 @@ class DishUseCaseTest {
                         PageRequest.of(page, pageSize, Sort.by("name"))))
                 .thenReturn(dishPage);
 
-        Page<DishModel> result = dishUseCase.findByCategoryAndRestaurantName(categoryId, restaurantName,0, 10);
+        Page<DishModel> result = dishUseCase.findByCategoryAndRestaurantName(categoryId, restaurantName, 0, 10);
 
         assertNotNull(result);
         assertEquals(3, result.getTotalElements());
@@ -118,6 +118,25 @@ class DishUseCaseTest {
         assertEquals(dishB.getName(), dishList.get(1).getName());
         assertEquals(dishC.getName(), dishList.get(2).getName());
 
+    }
+
+    @Test
+    void testFindByIdAndRestaurant() {
+        Long dishId = 1L;
+        Long restaurantId = 2L;
+        DishModel expectedDish = createSampleDish();
+        when(dishPersistencePort.findByIdAndRestaurant(dishId, restaurantId)).thenReturn(expectedDish);
+        DishModel resultDish = dishUseCase.findByIdAndRestaurant(dishId, restaurantId);
+        assertNotNull(resultDish);
+        assertEquals(expectedDish, resultDish);
+    }
+
+    private DishModel createSampleDish() {
+        return DishModel
+                .builder()
+                .id(1L)
+                .name("Sample Dish")
+                .build();
     }
 
 }

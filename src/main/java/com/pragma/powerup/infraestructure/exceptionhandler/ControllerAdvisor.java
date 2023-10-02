@@ -43,4 +43,9 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap(MESSAGE, "El restaurante no existe"));
     }
+    @ExceptionHandler(InvalidDishRestaurantException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidDishRestaurantException(InvalidDishRestaurantException restaurantNotFound) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(MESSAGE, "El plato seleccionado no pertenece al restaurante"));
+    }
 }

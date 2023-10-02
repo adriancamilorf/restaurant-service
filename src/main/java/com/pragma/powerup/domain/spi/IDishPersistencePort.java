@@ -16,4 +16,6 @@ public interface IDishPersistencePort {
     Long getRestaurantForDish(Long dishId);
 
     Page<DishModel> findByCategoryAndRestaurantName(Long category, String restaurantName, Pageable pageable);
+
+    DishModel findByIdAndRestaurant(Long id, Long restaurantId);
 }

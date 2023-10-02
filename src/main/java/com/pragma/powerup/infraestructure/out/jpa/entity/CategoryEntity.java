@@ -1,7 +1,6 @@
 package com.pragma.powerup.infraestructure.out.jpa.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -9,6 +8,9 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "categories")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CategoryEntity
 {
     @Id
