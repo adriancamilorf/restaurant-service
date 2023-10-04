@@ -48,4 +48,9 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(MESSAGE, "El plato seleccionado no pertenece al restaurante"));
     }
+    @ExceptionHandler(PendingOrderException.class)
+    public ResponseEntity<Map<String, String>> handlePendingOrderException(PendingOrderException pendingOrderException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE, "Ya tiene un pedido en espera."));
+    }
 }

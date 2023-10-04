@@ -1,4 +1,4 @@
-package com.pragma.powerup.infraestructure.feign.user.dto.response.role;
+package com.pragma.powerup.infraestructure.feign.user.dto.response.user;
 
 import lombok.*;
 

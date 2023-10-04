@@ -11,10 +11,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@IdClass(OrderDishKey.class)
 public class OrderDishEntity {
 
-    @EmbeddedId
-    private OrderDishKey id;
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private OrderEntity order;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "dish_id", referencedColumnName = "id")
+    private DishEntity dish;
 
     @Column(nullable = false)
     private Integer quantity;

@@ -1,6 +1,7 @@
 package com.pragma.powerup.infraestructure.out.jpa.adapter;
 
 import com.pragma.powerup.domain.model.DishModel;
+import com.pragma.powerup.domain.model.OrderDishModel;
 import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import com.pragma.powerup.infraestructure.exception.DishAlreadyExist;
 import com.pragma.powerup.infraestructure.exception.InvalidDishRestaurantException;

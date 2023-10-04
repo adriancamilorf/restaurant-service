@@ -6,8 +6,8 @@ import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import com.pragma.powerup.infraestructure.exception.OwnerNotFound;
 import com.pragma.powerup.infraestructure.exception.RestaurantAlreadyExist;
 import com.pragma.powerup.infraestructure.exception.RestaurantNotFoundException;
-import com.pragma.powerup.infraestructure.feign.user.RoleServiceRequest;
-import com.pragma.powerup.infraestructure.feign.user.dto.response.role.RoleByUserIdResponseDto;
+import com.pragma.powerup.infraestructure.feign.user.UserServiceRequest;
+import com.pragma.powerup.infraestructure.feign.user.dto.response.user.RoleByUserIdResponseDto;
 import com.pragma.powerup.infraestructure.out.jpa.entity.RestaurantEntity;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IRestaurantEntityMapper;
 import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantRepository;
@@ -22,10 +22,10 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
 
     private final IRestaurantRepository restaurantRepository;
     private final IRestaurantEntityMapper restaurantEntityMapper;
-    private final RoleServiceRequest roleServiceRequest;
+    private final UserServiceRequest userServiceRequest;
     @Override
     public void saveRestaurant(RestaurantModel restaurantModel) {
-        RoleByUserIdResponseDto role = roleServiceRequest.getRoleByUserId(restaurantModel.getOwnerId());
+        RoleByUserIdResponseDto role = userServiceRequest.getRoleByUserId(restaurantModel.getOwnerId());
         if(role==null){
             throw new OwnerInvalid();
         }

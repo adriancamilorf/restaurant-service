@@ -2,7 +2,8 @@ package com.pragma.powerup.domain.model;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,8 +13,9 @@ import java.time.LocalDate;
 public class OrderModel {
     private Long id;
     private Long clientId;
-    private LocalDate date;
+    private LocalDateTime date;
     private String state;
-    private Long chefId;
+    private EmployeeRestaurantModel chefId;
     private RestaurantModel restaurantModel;
+    private List<OrderDishModel> orderDishModelList;
 }

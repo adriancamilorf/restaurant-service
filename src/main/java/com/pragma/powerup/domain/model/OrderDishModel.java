@@ -2,6 +2,8 @@ package com.pragma.powerup.domain.model;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,5 +12,5 @@ import lombok.*;
 public class OrderDishModel {
     private DishModel dish;
     private OrderModel order;
-    private Integer amount;
+    private Integer quantity;
 }

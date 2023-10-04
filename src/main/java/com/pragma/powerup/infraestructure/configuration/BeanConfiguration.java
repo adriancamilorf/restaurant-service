@@ -1,29 +1,15 @@
 package com.pragma.powerup.infraestructure.configuration;
 
-import com.pragma.powerup.domain.api.IDishServicePort;
-import com.pragma.powerup.domain.api.IOrderDishServicePort;
-import com.pragma.powerup.domain.api.IOrderServicePort;
-import com.pragma.powerup.domain.api.IRestaurantServicePort;
-import com.pragma.powerup.domain.spi.IDishPersistencePort;
-import com.pragma.powerup.domain.spi.IOrderDishPersistencePort;
-import com.pragma.powerup.domain.spi.IOrderPersistencePort;
-import com.pragma.powerup.domain.spi.IRestaurantPersistencePort;
-import com.pragma.powerup.domain.usecase.DishUseCase;
-import com.pragma.powerup.domain.usecase.OrderDishUseCase;
-import com.pragma.powerup.domain.usecase.OrderUseCase;
-import com.pragma.powerup.domain.usecase.RestaurantUseCase;
-import com.pragma.powerup.infraestructure.feign.user.RoleServiceRequest;
-import com.pragma.powerup.infraestructure.out.jpa.adapter.DishJpaAdapter;
-import com.pragma.powerup.infraestructure.out.jpa.adapter.OrderDishJpaAdapter;
-import com.pragma.powerup.infraestructure.out.jpa.adapter.OrderJpaAdapter;
-import com.pragma.powerup.infraestructure.out.jpa.adapter.RestaurantJpaAdapter;
+import com.pragma.powerup.domain.api.*;
+import com.pragma.powerup.domain.spi.*;
+import com.pragma.powerup.domain.usecase.*;
+import com.pragma.powerup.infraestructure.feign.user.UserServiceRequest;
+import com.pragma.powerup.infraestructure.out.jpa.adapter.*;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IDishEntityMapper;
-import com.pragma.powerup.infraestructure.out.jpa.mapper.IOrderMapper;
+import com.pragma.powerup.infraestructure.out.jpa.mapper.IEmployeeRestaurantEntityMapper;
+import com.pragma.powerup.infraestructure.out.jpa.mapper.IOrderEntityMapper;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IRestaurantEntityMapper;
-import com.pragma.powerup.infraestructure.out.jpa.repository.IDishRepository;
-import com.pragma.powerup.infraestructure.out.jpa.repository.IOrderDishRepository;
-import com.pragma.powerup.infraestructure.out.jpa.repository.IOrderRepository;
-import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantRepository;
+import com.pragma.powerup.infraestructure.out.jpa.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,16 +20,18 @@ public class BeanConfiguration {
 
     private final IRestaurantRepository restaurantRepository;
     private final IRestaurantEntityMapper restaurantEntityMapper;
-    private final RoleServiceRequest roleServiceRequest;
+    private final UserServiceRequest userServiceRequest;
     private final IDishRepository dishRepository;
     private final IDishEntityMapper dishEntityMapper;
     private final IOrderDishRepository orderDishRepository;
     private final IOrderRepository orderRepository;
-    private final IOrderMapper orderMapper;
+    private final IOrderEntityMapper orderMapper;
+    private final IEmployeeRestaurantRepository employeeRestaurantRepository;
+    private final IEmployeeRestaurantEntityMapper employeeRestaurantEntityMapper;
 
     @Bean
     public IRestaurantPersistencePort restaurantPersistencePort(){
-        return new RestaurantJpaAdapter(restaurantRepository,restaurantEntityMapper,roleServiceRequest);
+        return new RestaurantJpaAdapter(restaurantRepository,restaurantEntityMapper, userServiceRequest);
     }
 
     @Bean
@@ -77,5 +65,15 @@ public class BeanConfiguration {
     @Bean
     public IOrderServicePort orderServicePort(){
         return new OrderUseCase(orderPersistencePort());
+    }
+
+    @Bean
+    public IEmployeeRestaurantPersistencePort employeeRestaurantPersistencePort(){
+        return new EmployeeRestaurantJpaAdapter(employeeRestaurantRepository,employeeRestaurantEntityMapper);
+    }
+
+    @Bean
+    public IEmployeeRestaurantServicePort employeeRestaurantServicePort(){
+        return new EmployeeRestaurantUseCase(employeeRestaurantPersistencePort());
     }
 }

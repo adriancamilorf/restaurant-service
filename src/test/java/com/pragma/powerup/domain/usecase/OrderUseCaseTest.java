@@ -12,14 +12,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class OrderUseCaseTest {
 
     @InjectMocks
-    private OrderUseCase OrderUseCase;
+    private OrderUseCase orderUseCase;
     @Mock
     private IOrderPersistencePort orderPersistencePort;
 
@@ -36,7 +40,7 @@ class OrderUseCaseTest {
 
         when(orderPersistencePort.saverOrder(any(OrderModel.class))).thenReturn(expectedOrder);
 
-        OrderModel actualOrder = OrderUseCase.saverOrder(clientId, restaurantId);
+        OrderModel actualOrder = orderUseCase.saverOrder(clientId, restaurantId);
 
         assertEquals(expectedOrder, actualOrder);
     }
@@ -46,8 +50,30 @@ class OrderUseCaseTest {
         return OrderModel.builder()
                 .state("PENDIENTE")
                 .clientId(clientId)
-                .date(LocalDate.now())
+                .date(LocalDateTime.now())
                 .restaurantModel(restaurantModel)
                 .build();
     }
+
+    @Test
+    void testGetByStateAndRestaurantId() {
+        String state = "PENDIENTE";
+        Long restaurantId = 1L;
+        int page = 0;
+        int pageSize = 10;
+        List<OrderModel> orders = new ArrayList<>();
+        orders.add(new OrderModel());
+        orders.add(new OrderModel());
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("date"));
+
+        Page<OrderModel> expectedPage = new PageImpl<>(orders, pageable, orders.size());
+
+        when(orderPersistencePort.getByStateAndRestaurantId(eq(state), eq(restaurantId), any(Pageable.class)))
+                .thenReturn(expectedPage);
+        Page<OrderModel> resultPage = orderUseCase.getByStateAndRestaurantId(state, restaurantId, page, pageSize);
+        verify(orderPersistencePort, times(1)).getByStateAndRestaurantId(eq(state), eq(restaurantId), any(Pageable.class));
+        assertEquals(expectedPage, resultPage);
+    }
+
 }

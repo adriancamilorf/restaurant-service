@@ -4,8 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import com.pragma.powerup.infraestructure.out.jpa.entity.RestaurantEntity;
-
+import java.time.LocalDateTime;
+import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter
@@ -21,12 +21,15 @@ public class OrderEntity {
     @Column(nullable = false,name = "id_client")
     private Long clientId;
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
     @Column(nullable = false)
     private String state;
-    @Column(name = "id_chef")
-    private Long chefId;
+    @ManyToOne
+    @JoinColumn(name = "id_chef")
+    private EmployeeRestaurantEntity chefId;
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_restaurant",nullable = false)
     private RestaurantEntity restaurant;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderDishEntity> orderDishes;
 }

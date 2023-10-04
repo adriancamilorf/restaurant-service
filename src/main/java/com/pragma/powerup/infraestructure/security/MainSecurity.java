@@ -44,9 +44,11 @@ public class MainSecurity {
         http.cors().and().csrf().disable()
                 .authorizeRequests(requests -> requests
                         .antMatchers( "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
-                        .antMatchers("/dish/save", "/dish/update/**", "dish/changeStatus/**").hasAuthority("OWNER")
-                        .antMatchers("/restaurant/list", "/dish/list/**").hasAuthority("CLIENT")
+                        .antMatchers("/dish/save", "/dish/update/**", "/dish/changeStatus/**", "/employee/save").hasAuthority("OWNER")
+                        .antMatchers("/restaurant/list", "/dish/list/**","/OrderDish/save/**" ).hasAuthority("CLIENT")
                         .antMatchers("restaurant/save").hasAuthority("ADMIN")
+                        .antMatchers("/order/list").hasAuthority("EMPLOYEE")
+                        .anyRequest().denyAll()
                 )
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

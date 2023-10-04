@@ -7,25 +7,21 @@ import com.pragma.powerup.infraestructure.exception.OwnerInvalid;
 import com.pragma.powerup.infraestructure.exception.OwnerNotFound;
 import com.pragma.powerup.infraestructure.exception.RestaurantAlreadyExist;
 import com.pragma.powerup.infraestructure.exception.RestaurantNotFoundException;
-import com.pragma.powerup.infraestructure.feign.user.RoleServiceRequest;
-import com.pragma.powerup.infraestructure.feign.user.dto.response.role.RoleByUserIdResponseDto;
+import com.pragma.powerup.infraestructure.feign.user.UserServiceRequest;
+import com.pragma.powerup.infraestructure.feign.user.dto.response.user.RoleByUserIdResponseDto;
 import com.pragma.powerup.infraestructure.out.jpa.entity.RestaurantEntity;
 import com.pragma.powerup.infraestructure.out.jpa.mapper.IRestaurantEntityMapper;
 import com.pragma.powerup.infraestructure.out.jpa.repository.IRestaurantRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.springframework.data.domain.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 class RestaurantJpaAdapterTest {
 
     private IRestaurantRepository restaurantRepository;
-    private RoleServiceRequest roleServiceRequest;
+    private UserServiceRequest userServiceRequest;
     private RestaurantJpaAdapter restaurantJpaAdapter;
 
     private IRestaurantEntityMapper restaurantEntityMapper;
@@ -34,8 +30,8 @@ class RestaurantJpaAdapterTest {
     public void setUp() {
         restaurantRepository = mock(IRestaurantRepository.class);
         IRestaurantEntityMapper restaurantEntityMapper = mock(IRestaurantEntityMapper.class);
-        roleServiceRequest = mock(RoleServiceRequest.class);
-        restaurantJpaAdapter = new RestaurantJpaAdapter(restaurantRepository, restaurantEntityMapper, roleServiceRequest);
+        userServiceRequest = mock(UserServiceRequest.class);
+        restaurantJpaAdapter = new RestaurantJpaAdapter(restaurantRepository, restaurantEntityMapper, userServiceRequest);
     }
 
     @Test
@@ -51,7 +47,7 @@ class RestaurantJpaAdapterTest {
         RoleByUserIdResponseDto role = new RoleByUserIdResponseDto();
         role.setName("OWNER");
 
-        when(roleServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(role);
+        when(userServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(role);
         when(restaurantRepository.findByName(restaurantModel.getName())).thenReturn(Optional.empty());
         when(restaurantRepository.findByNit(restaurantModel.getNit())).thenReturn(Optional.empty());
 
@@ -70,7 +66,7 @@ class RestaurantJpaAdapterTest {
                 .urlLogo("logo.com")
                 .build();
 
-        when(roleServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(null);
+        when(userServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(null);
 
         Assertions.assertThrows(OwnerInvalid.class, () -> restaurantJpaAdapter.saveRestaurant(restaurantModel));
     }
@@ -89,7 +85,7 @@ class RestaurantJpaAdapterTest {
                 .name("CLIENT")
                 .build();
 
-        when(roleServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(role);
+        when(userServiceRequest.getRoleByUserId(restaurantModel.getOwnerId())).thenReturn(role);
         Assertions.assertThrows(OwnerNotFound.class, () -> restaurantJpaAdapter.saveRestaurant(restaurantModel));
     }
 
@@ -104,7 +100,7 @@ class RestaurantJpaAdapterTest {
                 .urlLogo("logo.com")
                 .build();
         RestaurantEntity restaurantEntity = new RestaurantEntity();
-        when(roleServiceRequest.getRoleByUserId(anyLong())).thenReturn(
+        when(userServiceRequest.getRoleByUserId(anyLong())).thenReturn(
                 RoleByUserIdResponseDto.builder()
                         .name("OWNER")
                         .build()
@@ -127,7 +123,7 @@ class RestaurantJpaAdapterTest {
         RestaurantEntity restaurantEntity = new RestaurantEntity();
 
         when(restaurantRepository.findByNit(restaurantModel.getNit())).thenReturn(Optional.of(restaurantEntity));
-        when(roleServiceRequest.getRoleByUserId(anyLong())).thenReturn(
+        when(userServiceRequest.getRoleByUserId(anyLong())).thenReturn(
                 RoleByUserIdResponseDto.builder()
                         .name("OWNER")
                         .build()

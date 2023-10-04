@@ -5,8 +5,12 @@ import com.pragma.powerup.domain.model.OrderModel;
 import com.pragma.powerup.domain.model.RestaurantModel;
 import com.pragma.powerup.domain.spi.IOrderPersistencePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 public class OrderUseCase implements IOrderServicePort {
@@ -20,9 +24,15 @@ public class OrderUseCase implements IOrderServicePort {
                 .builder()
                 .state("PENDIENTE")
                 .clientId(clientId)
-                .date(LocalDate.now())
+                .date(LocalDateTime.now())
                 .restaurantModel(restaurantModel)
                 .build();
         return orderPersistencePort.saverOrder(orderModel);
+    }
+
+    @Override
+    public Page<OrderModel> getByStateAndRestaurantId(String state, Long restaurantId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("date"));
+        return orderPersistencePort.getByStateAndRestaurantId(state,restaurantId,pageable);
     }
 }
